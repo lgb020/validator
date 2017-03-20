@@ -4,6 +4,9 @@ import com.devefx.validation.kit.JsonKit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.feimz.system.enu.MyCode;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -124,7 +127,13 @@ public abstract class Validator implements Script {
      * @param response
      */
     public void handlerError(HttpServletRequest request, HttpServletResponse response) {
-        Result<Map<String, String>> result = new Result<Map<String, String>>(!invalid, errorMap);
+    	MyCode code = null;
+    	if(invalid){
+    		code = MyCode.OP_PARAM_ERR;
+    	}else{
+    		code = MyCode.OP_SUCCESS;
+    	}
+        Result<Map<String, String>> result = new Result<Map<String, String>>(code,errorMap);
         try {
             response.setContentType("application/x-javascript; charset=utf-8");
             PrintWriter out = response.getWriter();
