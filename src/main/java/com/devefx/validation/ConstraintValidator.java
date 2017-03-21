@@ -1,8 +1,7 @@
 package com.devefx.validation;
 
-import com.devefx.validation.Error;
+import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * ConstraintValidator
@@ -20,5 +19,5 @@ public abstract class ConstraintValidator {
         return error;
     }
 
-    public abstract boolean isValid(HttpServletRequest request) throws Exception;
+    public abstract boolean isValid(Map<String,Object> body) throws Exception;
 }

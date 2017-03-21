@@ -1,11 +1,15 @@
 package com.devefx.validation;
 
+import com.devefx.validation.constraints.BodyReaderHttpServletRequestWrapper;
+import com.devefx.validation.constraints.HttpHelper;
 import com.devefx.validation.kit.JsonKit;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.feimz.system.enu.MyCode;
+import net.feimz.utils._JsonUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -75,6 +79,24 @@ public abstract class Validator implements Script {
      * 设置
      */
     public abstract void setup();
+    
+    /**
+     * 读取request的body请求
+     * @param request
+     * @return
+     */
+    private Map<String,Object> getRequestBody(HttpServletRequest request) {
+    	// 防止流读取一次后就没有了, 所以需要将流继续写出去
+        ServletRequest requestWrapper;
+		try {
+			requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
+			String body = HttpHelper.getBodyString(requestWrapper);
+			return _JsonUtil.JsonToMaps(body);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
     /**
      * 执行验证
      * @param request
@@ -83,9 +105,11 @@ public abstract class Validator implements Script {
      */
     public final boolean process(HttpServletRequest request, HttpServletResponse response) {
         synchronized (errorMap) {
+        	Map<String,Object> body = getRequestBody(request);
             for (ConstraintValidator module: modules) {
                 try {
-                    if (!module.isValid(request)) {
+                	boolean isValid = module.isValid(body);
+                    if (!isValid) {
                         invalid = true;
                         Error error = module.getError();
                         if (!errorMap.containsKey(error.getCode())) {
@@ -113,7 +137,8 @@ public abstract class Validator implements Script {
         for (ConstraintValidator module: modules) {
             if (module instanceof Script) {
                 if (index == moduleId) {
-                    return module.isValid(request);
+//                    return module.isValid(request);
+                	return false;
                 }
                 index++;
             }

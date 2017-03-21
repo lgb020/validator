@@ -1,14 +1,18 @@
 package com.devefx.validation.constraints.impl;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.feimz.utils._JsonUtil;
+import net.feimz.utils._StringUtils;
+
 import com.devefx.validation.Script;
 import com.devefx.validation.annotation.BindScript;
 import com.devefx.validation.constraints.FieldValidator;
-import com.devefx.validation.kit.StrKit;
 import com.devefx.validation.script.JavaScript;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * NotBlankValidator
@@ -23,11 +27,24 @@ public class NotBlankValidator extends FieldValidator implements Script {
         super(field, errorCode, errorMessage);
         script = JavaScript.create(this, field, errorCode, errorMessage);
     }
-
+    /**
+     * 验证通过（非空）返回true
+     * 验证不通过（空）返回false
+     */
     @Override
-    public boolean isValid(HttpServletRequest request) {
-        String value = request.getParameter(field);
-        return !StrKit.isBlank(value);
+    public boolean isValid(Map<String,Object> requestBody) {
+//        String value = request.getParameter(field);
+    	logger.debug("需要验证的字段："+field);
+    	logger.debug("request body:"+requestBody);
+    	Object value = requestBody.get(field);
+    	boolean result = false;
+    	try{
+    		result = _StringUtils.isNotBlank((String)value); 
+    	}catch(Exception e){
+    		result = _StringUtils.isNotBlank(String.valueOf(value));
+    	}
+    	logger.debug("验证结果："+result);
+        return result;
     }
 
     @Override
