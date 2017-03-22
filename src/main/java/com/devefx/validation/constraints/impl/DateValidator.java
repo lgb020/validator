@@ -1,17 +1,18 @@
 package com.devefx.validation.constraints.impl;
 
-import com.devefx.validation.Script;
-import com.devefx.validation.annotation.BindScript;
-import com.devefx.validation.kit.DateKit;
-import com.devefx.validation.constraints.FieldValidator;
-import com.devefx.validation.kit.StrKit;
-import com.devefx.validation.script.JavaScript;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
+
+import net.feimz.utils._StringUtils;
+
+import com.devefx.validation.Script;
+import com.devefx.validation.annotation.BindScript;
+import com.devefx.validation.constraints.FieldValidator;
+import com.devefx.validation.kit.DateKit;
+import com.devefx.validation.script.JavaScript;
 
 /**
  * DateValidator
@@ -57,13 +58,18 @@ public class DateValidator extends FieldValidator implements Script {
     }
 
     @Override
-    public boolean isValid(HttpServletRequest request) throws Exception {
-        String value = request.getParameter(field);
-        if (!StrKit.isEmpty(value)) {
-            Date date = DateKit.parse(pattern != null ? pattern : DEFAULT_DATE_PATTERN, value);
-            return !(date.before(minDate) || date.after(maxDate));
-        }
+    public boolean isValid(Map<String,Object> requestBody) throws Exception {
+        
+        Object value = requestBody.get(field);
+    	if(value != null){
+    		String v = value.toString();
+    		if(_StringUtils.isNotBlank(v)){
+    			Date date = DateKit.parse(pattern != null ? pattern : DEFAULT_DATE_PATTERN, v);
+            	return !(date.before(minDate) || date.after(maxDate));
+    		}
+    	}
         return true;
+        
     }
 
     @Override

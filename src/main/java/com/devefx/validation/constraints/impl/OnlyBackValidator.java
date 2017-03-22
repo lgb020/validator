@@ -1,6 +1,6 @@
 package com.devefx.validation.constraints.impl;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import com.devefx.validation.ConstraintValidator;
 
@@ -14,8 +14,8 @@ public class OnlyBackValidator extends ConstraintValidator {
     }
 
     @Override
-    public boolean isValid(HttpServletRequest request) throws Exception {
-        return validator.isValid(request);
+    public boolean isValid(Map<String,Object> requestBody) throws Exception {
+        return validator.isValid(requestBody);
     }
 
 }

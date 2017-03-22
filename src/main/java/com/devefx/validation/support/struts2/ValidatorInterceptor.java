@@ -27,11 +27,11 @@ public class ValidatorInterceptor extends MethodFilterInterceptor {
             HttpServletResponse response = (HttpServletResponse) context.get(HTTP_RESPONSE);
             Class<?> actionClass = proxy.getAction().getClass();
 			// valid
-			if (!Interceptor.valid(actionClass, request, response)) {
+			if (!Interceptor.valid(actionClass, request, response,null)) {
 				return null;
 			}
 			Method method = actionClass.getMethod(proxy.getMethod());
-			if (!Interceptor.valid(method, request, response)) {
+			if (!Interceptor.valid(method, request, response,null)) {
 				return null;
 			}
 		}

@@ -2,6 +2,8 @@ package com.devefx.validation.support.servlet;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -49,7 +51,8 @@ public class ValidatorFilter implements Filter {
 		try {
 			Servlet servlet =  getServlet(chain);
 			if (servlet != null) {
-				if (!Interceptor.valid(servlet.getClass(), (HttpServletRequest) request, (HttpServletResponse) response)) {
+				Map<String,Object> requestBody = new HashMap<>();
+				if (!Interceptor.valid(servlet.getClass(), (HttpServletRequest) request, (HttpServletResponse) response,requestBody)) {
 					return;
 				}
 			}

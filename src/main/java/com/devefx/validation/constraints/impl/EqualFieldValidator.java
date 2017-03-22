@@ -1,13 +1,15 @@
 package com.devefx.validation.constraints.impl;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
+
+import net.feimz.utils._StringUtils;
+
 import com.devefx.validation.Script;
 import com.devefx.validation.annotation.BindScript;
 import com.devefx.validation.constraints.FieldValidator;
 import com.devefx.validation.script.JavaScript;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * EqualFieldValidator
@@ -26,12 +28,18 @@ public class EqualFieldValidator extends FieldValidator implements Script {
     }
 
     @Override
-    public boolean isValid(HttpServletRequest request) {
-        String value1 = request.getParameter(field);
-        String value2 = request.getParameter(field2);
-        if ((value1 == value2) || (value1 != null && value2 != null && value1.equals(value2))) {
-            return true;
-        }
+    public boolean isValid(Map<String,Object> requestBody) {
+        Object v1 = requestBody.get(field);
+        Object value2 = requestBody.get(field2);
+    	if(v1 != null){
+    		String value1 = v1.toString();
+    		if(_StringUtils.isNotBlank(value1)){
+    			 if ((value1 == value2) || (value2 != null && value1.equals(value2))) {
+    		            return true;
+    		        }
+    		}
+    	}
+       
         return false;
     }
 

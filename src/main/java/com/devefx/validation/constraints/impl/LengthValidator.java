@@ -1,13 +1,13 @@
 package com.devefx.validation.constraints.impl;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
+
 import com.devefx.validation.Script;
 import com.devefx.validation.annotation.BindScript;
 import com.devefx.validation.constraints.FieldValidator;
 import com.devefx.validation.script.JavaScript;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * LengthValidator
@@ -28,9 +28,10 @@ public class LengthValidator extends FieldValidator implements Script {
     }
 
     @Override
-    public boolean isValid(HttpServletRequest request) {
-        String value = request.getParameter(field);
-        if (value != null) {
+    public boolean isValid(Map<String,Object> requestBody) {
+        Object v = requestBody.get(field);
+        if (v != null) {
+        	String value = v.toString();
             int len = value.length();
             return len >= minLen && len <= maxLen;
         }

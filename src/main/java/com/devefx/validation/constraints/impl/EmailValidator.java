@@ -1,16 +1,17 @@
 package com.devefx.validation.constraints.impl;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.feimz.utils._StringUtils;
+
 import com.devefx.validation.Script;
 import com.devefx.validation.annotation.BindScript;
 import com.devefx.validation.constraints.FieldValidator;
-import com.devefx.validation.kit.StrKit;
 import com.devefx.validation.script.JavaScript;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * EmailValidator
@@ -36,19 +37,22 @@ public class EmailValidator extends FieldValidator implements Script {
     }
 
     @Override
-    public boolean isValid(HttpServletRequest request) {
-        String value = request.getParameter(field);
-        if (!StrKit.isEmpty(value)) {
-            if (multi) {
-                if (!value.endsWith(";")) {
-                    value = value + ";";
+    public boolean isValid(Map<String,Object> requestBody) {
+        Object value = requestBody.get(field);
+    	if(value != null){
+    		String v = value.toString();
+    		if(_StringUtils.isNotBlank(v)){
+    			if (multi) {
+                    if (!v.endsWith(";")) {
+                        v = v + ";";
+                    }
+                    Matcher matcher = emailMultiPattern.matcher(v);
+                    return matcher.matches();
                 }
-                Matcher matcher = emailMultiPattern.matcher(value);
+                Matcher matcher = emailPattern.matcher(v);
                 return matcher.matches();
-            }
-            Matcher matcher = emailPattern.matcher(value);
-            return matcher.matches();
-        }
+    		}
+    	}
         return true;
     }
 

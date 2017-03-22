@@ -1,16 +1,17 @@
 package com.devefx.validation.constraints.impl;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.feimz.utils._StringUtils;
+
 import com.devefx.validation.Script;
 import com.devefx.validation.annotation.BindScript;
 import com.devefx.validation.constraints.FieldValidator;
-import com.devefx.validation.kit.StrKit;
 import com.devefx.validation.script.JavaScript;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * PatternValidator
@@ -34,11 +35,14 @@ public class PatternValidator extends FieldValidator implements Script {
     }
 
     @Override
-    public boolean isValid(HttpServletRequest request) {
-        String value = request.getParameter(field);
-        if (!StrKit.isEmpty(value)) {
-            Matcher matcher = pattern.matcher(value);
-            return matcher.matches();
+    public boolean isValid(Map<String,Object> requestBody) {
+        Object v = requestBody.get(field);
+        if(v != null){
+        	String value = v.toString();
+	        if (_StringUtils.isNotBlank(value)) {
+	            Matcher matcher = pattern.matcher(value);
+	            return matcher.matches();
+	        }
         }
         return true;
     }

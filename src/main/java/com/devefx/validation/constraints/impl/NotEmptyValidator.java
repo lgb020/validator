@@ -1,14 +1,15 @@
 package com.devefx.validation.constraints.impl;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
+
+import net.feimz.utils._StringUtils;
+
 import com.devefx.validation.Script;
 import com.devefx.validation.annotation.BindScript;
 import com.devefx.validation.constraints.FieldValidator;
-import com.devefx.validation.kit.StrKit;
 import com.devefx.validation.script.JavaScript;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * NotEmptyValidator
@@ -25,9 +26,13 @@ public class NotEmptyValidator extends FieldValidator implements Script {
     }
 
     @Override
-    public boolean isValid(HttpServletRequest request) {
-        String value = request.getParameter(field);
-        return !StrKit.isEmpty(value);
+    public boolean isValid(Map<String,Object> requestBody) {
+        Object v = requestBody.get(field);
+        if(v != null){
+        	String value = v.toString();
+        	return _StringUtils.isNotBlank(value);
+        }
+        return false;
     }
 
     @Override

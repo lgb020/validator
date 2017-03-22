@@ -19,5 +19,11 @@ public abstract class ConstraintValidator {
         return error;
     }
 
+    /**
+     * 判断是否验证通过，通过返回true。不通过返回false
+     * @param body
+     * @return
+     * @throws Exception
+     */
     public abstract boolean isValid(Map<String,Object> body) throws Exception;
 }

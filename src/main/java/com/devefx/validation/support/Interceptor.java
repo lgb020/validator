@@ -3,6 +3,7 @@ package com.devefx.validation.support;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,14 +27,15 @@ public class Interceptor {
 	    return validCahce;
 	}
 	
-	public static boolean valid(AnnotatedElement annotatedElement, HttpServletRequest request, HttpServletResponse response) {
+	public static boolean valid(AnnotatedElement annotatedElement, HttpServletRequest request
+			, HttpServletResponse response,Map<String,Object> requestBody) {
 		List<Validator> validSet = validCahce.get(annotatedElement);
 		if (validSet != null) {
 			Iterator<Validator> it = validSet.iterator();
 			while (it.hasNext()) {
 				Validator valid = it.next();
 				valid.reset();
-				if (!valid.process(request, response)) {
+				if (!valid.process(request, response,requestBody)) {
 					return false;
 				}
 			}

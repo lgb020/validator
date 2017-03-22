@@ -1,16 +1,5 @@
 package com.devefx.validation;
 
-import com.devefx.validation.constraints.BodyReaderHttpServletRequestWrapper;
-import com.devefx.validation.constraints.HttpHelper;
-import com.devefx.validation.kit.JsonKit;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.feimz.system.enu.MyCode;
-import net.feimz.utils._JsonUtil;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -19,6 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.feimz.system.enu.MyCode;
+
+import com.devefx.validation.kit.JsonKit;
 
 /**
  * Validator
@@ -81,34 +77,16 @@ public abstract class Validator implements Script {
     public abstract void setup();
     
     /**
-     * 读取request的body请求
-     * @param request
-     * @return
-     */
-    private Map<String,Object> getRequestBody(HttpServletRequest request) {
-    	// 防止流读取一次后就没有了, 所以需要将流继续写出去
-        ServletRequest requestWrapper;
-		try {
-			requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
-			String body = HttpHelper.getBodyString(requestWrapper);
-			return _JsonUtil.JsonToMaps(body);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-    }
-    /**
      * 执行验证
      * @param request
      * @param response
      * @return
      */
-    public final boolean process(HttpServletRequest request, HttpServletResponse response) {
+    public final boolean process(HttpServletRequest request, HttpServletResponse response,Map<String,Object> requestBody) {
         synchronized (errorMap) {
-        	Map<String,Object> body = getRequestBody(request);
             for (ConstraintValidator module: modules) {
                 try {
-                	boolean isValid = module.isValid(body);
+                	boolean isValid = module.isValid(requestBody);
                     if (!isValid) {
                         invalid = true;
                         Error error = module.getError();
