@@ -25,13 +25,13 @@ public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapp
         super(request);
 //        this.request = request;
         body = HttpHelper.getBodyByte(request);
-        if(body == null){
-        	Enumeration<String> en = request.getParameterNames();
-        	while(en.hasMoreElements()){
-        		String k = en.nextElement();
-        		this.setAttribute(k, request.getParameter(k));
-        	}
-        }
+//        if(body == null){
+//        	Enumeration<String> en = request.getParameterNames();
+//        	while(en.hasMoreElements()){
+//        		String k = en.nextElement();
+//        		this.setAttribute(k, request.getParameter(k));
+//        	}
+//        }
     }
     
     @Override

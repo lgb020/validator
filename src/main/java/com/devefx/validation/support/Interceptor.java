@@ -27,6 +27,19 @@ public class Interceptor {
 	    return validCahce;
 	}
 	
+	/**
+	 * 判断是否需要拦截(包含注解就需要拦截)
+	 * @param annotatedElement
+	 * @return
+	 */
+	public static boolean isNeedInterceptor(AnnotatedElement annotatedElement){
+		List<Validator> validSet = validCahce.get(annotatedElement);
+		if(validSet != null){
+			return true;
+		}
+		return false;
+	}
+	
 	public static boolean valid(AnnotatedElement annotatedElement, HttpServletRequest request
 			, HttpServletResponse response,Map<String,Object> requestBody) {
 		List<Validator> validSet = validCahce.get(annotatedElement);
@@ -42,4 +55,5 @@ public class Interceptor {
 		}
 		return true;
 	}
+	
 }
